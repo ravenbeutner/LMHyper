@@ -32,7 +32,7 @@ type CommandLineArguments =
             IterationBound = None
 
             LogPrintouts = false
-            RaiseExceptions = true
+            RaiseExceptions = false
         }
 
 let rec private splitByPredicate (f : 'T -> bool) (xs : list<'T>) = 
@@ -63,7 +63,7 @@ let parseCommandLineArguments (args : list<string>) =
                         parseArgumentsRec ys { opt with IterationBound = Some i }
                     with
                     | _ -> Result.Error ("Could not parse iteration count")
-                    
+
             | s when s <> "" && s.Trim().StartsWith "-" -> 
                 Result.Error ("Option " + s + " is not supported" )
 
