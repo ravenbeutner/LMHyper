@@ -54,16 +54,19 @@ let run args =
             Logger = logger
         }
 
-    let path = 
-        cmdArgs.InputFile
-        |> Option.defaultWith (fun _ -> raise <| LMHyperException "No input file given")
+    let content = 
+        match cmdArgs.Input with 
+        | None -> 
+            raise <| LMHyperException "No input given"
+        | Some (InputContent c) -> c 
+        | Some (InputFile path) -> 
+            try 
+                File.ReadAllText path 
+            with
+            | _ -> raise <| LMHyperException $"Could not open {path}"
 
-    let c = 
-        try File.ReadAllText path with
-        | _ -> raise <| LMHyperException $"Could not open {path}"
-    
     let hyperltl = 
-        HyperLTL.Parser.parseHyperLTL Util.ParserUtil.escapedStringParser c 
+        HyperLTL.Parser.parseHyperLTL Util.ParserUtil.escapedStringParser content 
         |> Result.defaultWith (fun e -> raise <| LMHyperException $"Could not parse HyperLTL formula: {e}")
 
     HyperLTL.HyperLTL.findError hyperltl

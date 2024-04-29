@@ -106,6 +106,8 @@ let isSat (config: Configuration) (iterations : option<int>) (hyperltl : HyperLT
         match blockPrefix with 
         | [(FORALL, [univPi]); (EXISTS, existsPiList)] -> 
             univPi, existsPiList
+        | [(FORALL, [univPi])] -> 
+            univPi, []
         | _ -> 
             raise <| LMHyperException "LMHyper is only applicable to \\forall^1\\exists^* HyperLTL formulas"
 

@@ -17,9 +17,14 @@
 
 module LMHyper.CommandLineParser
 
+
+type Input = 
+    | InputFile of string 
+    | InputContent of string
+
 type CommandLineArguments = 
     {
-        InputFile : option<string>
+        Input : option<Input>
         IterationBound : option<int>
 
         LogPrintouts : bool // If set to true, we log intermediate steps to the console
@@ -28,7 +33,7 @@ type CommandLineArguments =
 
     static member Default = 
         {
-            InputFile = None
+            Input = None
             IterationBound = None
 
             LogPrintouts = false
@@ -54,6 +59,7 @@ let parseCommandLineArguments (args : list<string>) =
             match x with 
             | "--log" -> 
                 parseArgumentsRec xs { opt with LogPrintouts = true }
+
             | "--iter" -> 
                 match xs with 
                 | [] -> Result.Error ("Option '-iter' must be followed by a number")
@@ -64,15 +70,24 @@ let parseCommandLineArguments (args : list<string>) =
                     with
                     | _ -> Result.Error ("Could not parse iteration count")
 
+            | "-f" -> 
+                if opt.Input.IsSome then 
+                    Result.Error "Input cannot be given more than once"
+                else 
+                    match xs with 
+                    | [] -> Result.Error ("Option '-f' must be followed by a file name")
+                    | y :: ys -> 
+                        parseArgumentsRec ys { opt with Input = Some (InputFile y)}
+
             | s when s <> "" && s.Trim().StartsWith "-" -> 
                 Result.Error ("Option " + s + " is not supported" )
 
             | x -> 
                 // When no option is given, we assume that this is the input 
-                if opt.InputFile.IsSome then 
-                    Result.Error "Input files cannot be given more than once"
+                if opt.Input.IsSome then 
+                    Result.Error "Input cannot be given more than once"
                 else 
-                    parseArgumentsRec xs {opt with InputFile = Some x}
+                    parseArgumentsRec xs {opt with Input = Some (InputContent x)}
 
     parseArgumentsRec args CommandLineArguments.Default
                                 

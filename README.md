@@ -72,10 +72,19 @@ For example, if `/usr/bin/ltl2tgba` and `/usr/bin/autfilt` are the _ltl2tgba_, a
 After you have built LMHyper and modified the configuration file you can use LMHyper by running the following
  
 ```shell
-./app/LMHyper <options> <instancePath>
+./app/LMHyper <options> <instance>
 ```
 
-where `<instancePath>` is the (path to the) input instance (the HyperLTL formula) and `<options>` defines the command-line options. 
+where `<instance>` is the HyperLTL formula, and `<options>` defines the command-line options. 
+For example, `./app/LMHyper "forall pi. G ('a'_pi)"`.
+
+Alteratively, you can also run 
+
+```shell
+./app/LMHyper <options> -f <instancePath>
+```
+
+where `<instancePath>` is the path to a file that contains the input instance (the HyperLTL formula), and `<options>` defines the command-line options. 
 
 
 ## Command Line Options 
@@ -95,6 +104,7 @@ Here `<body>` can be one of the following:
 - `1`: specifies the boolean constant true
 - `0`: specifies the boolean constant false
 - `"<ap>"_<tvar>`, where `<ap>` is an atomic proposition (AP), which can be any string not containing `"`. Note that APs always need to be escaped in `"`s.
+- `'<ap>'_<tvar>`, where `<ap>` is an atomic proposition (AP), which can be any string not containing `'`. Note that APs always need to be escaped in `'`s.
 - `(<body>)`
 - `<body> <bopp> <body>`, where `<bopp>` can be `&` (conjunction), `|` (disjunction), `->` (implication), `<->` (equivalence), `U` (until operator), `W` (weak until operator), and `R` (release operator)
 - `<uopp> <body>`, where `<uopp>` can be `!` (negation), `X` (next operator), `G` (globally), and `F` (eventually operator)
@@ -112,6 +122,13 @@ An example property is the following:
 ```
 forall pi. exists pii. G ("a"_pi <-> !"a"_pii)
 ```
+
+or, using single quotes, 
+
+```
+forall pi. exists pii. G ('a'_pi <-> !'a'_pii)
+```
+
 
 # References
 

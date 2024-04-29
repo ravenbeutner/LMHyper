@@ -50,7 +50,16 @@ module ParserUtil =
                 | 't' -> "\t"
                 | c   -> string c
 
-        between
-            (pchar '"')
-            (pchar '"')
-            (stringsSepBy (manySatisfy (fun c -> c <> '"' && c <> '\\')) (pstring "\\" >>. escapedCharParser))
+        let doubleQuotes = 
+            between
+                (pchar '"')
+                (pchar '"')
+                (stringsSepBy (manySatisfy (fun c -> c <> '"' && c <> '\\')) (pstring "\\" >>. escapedCharParser))
+
+        let singleQuotes = 
+            between
+                (pchar ''')
+                (pchar ''')
+                (stringsSepBy (manySatisfy (fun c -> c <> ''' && c <> '\\')) (pstring "\\" >>. escapedCharParser))
+
+        doubleQuotes <|> singleQuotes
