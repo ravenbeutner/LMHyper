@@ -80,8 +80,6 @@ where `<instancePath>` is the (path to the) input instance (the HyperLTL formula
 
 ## Command Line Options 
 
-## Options 
-
 Using the `--iter <n>` option, you can bound the number of iterations performed by LMHyper.
 When using the `--log` option, LMHyper prints additional debug information. 
 
